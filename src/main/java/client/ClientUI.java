@@ -30,7 +30,7 @@ public class ClientUI extends JFrame{
 
     public ClientUI(){
         setTitle("WhiteBoard-Client");
-        setSize(500, 300);
+        setSize(800, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
@@ -93,6 +93,13 @@ public class ClientUI extends JFrame{
 
         canvas.addMouseListener(canvasListener);
         canvas.addMouseMotionListener(canvasListener);
+        textButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                canvasListener.setShape("Text");
+            }
+        });
     }
 
     public static void main(String[] args){

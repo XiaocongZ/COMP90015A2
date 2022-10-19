@@ -1,5 +1,6 @@
 package client;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -32,7 +33,14 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     }
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        int xClicked = e.getX();
+        int yClikcked = e.getY();
+        if(shape == "Text") {
+            String text = JOptionPane.showInputDialog("Annotate:");
+            Font f = new Font(null, Font.PLAIN,  10);
+            graphics.setFont(f);
+            graphics.drawString(text, xClicked, yClikcked);
+        }
     }
 
     @Override
