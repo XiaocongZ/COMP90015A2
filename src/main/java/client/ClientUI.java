@@ -1,6 +1,7 @@
 package client;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -9,6 +10,8 @@ public class ClientUI extends JFrame{
     private JPanel mainPanel;
 
     private JPanel canvas;
+
+    private CanvasListener canvasListener;
     private JButton sendButton;
     private JButton kickButton;
 
@@ -17,6 +20,13 @@ public class ClientUI extends JFrame{
     private JScrollPane userPane;
     private JScrollPane chatPane;
     private JTextArea chatArea;
+    private JButton circButton;
+    private JButton rectButton;
+    private JButton ovalButton;
+    private JButton triButton;
+    private JButton lineButton;
+    private JButton freeButton;
+    private JButton textButton;
 
     public ClientUI(){
         setTitle("WhiteBoard-Client");
@@ -25,12 +35,10 @@ public class ClientUI extends JFrame{
 
 
         setContentPane(mainPanel);
-
-
-
-
         setVisible(true);
 
+        canvas.setBorder(BorderFactory.createLineBorder(Color.black));
+        canvasListener = new CanvasListener(canvas.getGraphics());
 
         /*
         sendButton.addMouseListener(new MouseAdapter() {
@@ -65,6 +73,26 @@ public class ClientUI extends JFrame{
 
             }
         });
+        ovalButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Graphics graphics = canvas.getGraphics();
+                canvasListener.setShape("Oval");
+                //graphics.drawOval(100, 100, 50, 5);
+            }
+        });
+        triButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Graphics graphics = canvas.getGraphics();
+                canvasListener.setShape("Triangle");
+            }
+        });
+
+        canvas.addMouseListener(canvasListener);
+        canvas.addMouseMotionListener(canvasListener);
     }
 
     public static void main(String[] args){
@@ -78,7 +106,6 @@ public class ClientUI extends JFrame{
         listModel.addElement("Jane Doe");
         listModel.addElement("John Smith");
         listModel.addElement("Kathy Green");
-
 
         userList = new JList(listModel);
         userPane = new JScrollPane();
