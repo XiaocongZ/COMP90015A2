@@ -27,6 +27,7 @@ public class ClientUI extends JFrame{
     private JButton lineButton;
     private JButton freeButton;
     private JButton textButton;
+    private JButton colorButton;
 
     public ClientUI(){
         setTitle("WhiteBoard-Client");
@@ -40,20 +41,6 @@ public class ClientUI extends JFrame{
         canvas.setBorder(BorderFactory.createLineBorder(Color.black));
         canvasListener = new CanvasListener(canvas.getGraphics());
 
-        /*
-        sendButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                String msg = chatInputField.getText();
-
-                msg = chatField.getText() + msg + "\n";
-                chatField.setText(msg);
-                chatInputField.setText("");
-            }
-        });
-
-         */
 
         sendButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -98,6 +85,44 @@ public class ClientUI extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 canvasListener.setShape("Text");
+            }
+        });
+
+        freeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                canvasListener.setShape("Free");
+            }
+        });
+        rectButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                canvasListener.setShape("Rect");
+            }
+        });
+        colorButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Color c = JColorChooser.showDialog(canvas, "Choose color", null);
+                canvasListener.getGraphics().setColor(c);
+
+            }
+        });
+        circButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                canvasListener.setShape("Circle");
+            }
+        });
+        lineButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                canvasListener.setShape("Line");
             }
         });
     }

@@ -26,7 +26,13 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
     private int yReleased;
 
+    public void setGraphics(Graphics graphics) {
+        this.graphics = graphics;
+    }
 
+    public Graphics getGraphics() {
+        return graphics;
+    }
 
     public void setShape(String shape){
         this.shape = shape;
@@ -40,6 +46,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
             Font f = new Font(null, Font.PLAIN,  10);
             graphics.setFont(f);
             graphics.drawString(text, xClicked, yClikcked);
+
         }
     }
 
@@ -53,8 +60,14 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
         xReleased = e.getX();
         yReleased = e.getY();
-        if(shape!="None"){
+        if(shape=="Oval"){
             graphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
+        } else if (shape=="Rect") {
+            graphics.drawRect(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
+        } else if (shape=="Circle") {
+            graphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(xPressed - xReleased));
+        } else if (shape=="Line") {
+            graphics.drawLine(xPressed, yPressed, xReleased, yReleased);
         }
     }
 
@@ -70,7 +83,11 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        int xDragged = e.getX();
+        int yDragged = e.getY();
+        if(shape == "Free"){
+            graphics.drawOval(xDragged, yDragged,2, 2);
+        }
     }
 
     @Override
