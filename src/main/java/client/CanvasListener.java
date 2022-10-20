@@ -68,6 +68,12 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
             graphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(xPressed - xReleased));
         } else if (shape=="Line") {
             graphics.drawLine(xPressed, yPressed, xReleased, yReleased);
+        } else if (shape=="Triangle") {
+            graphics.drawLine(xPressed, yPressed, xReleased, yReleased);
+            //horizontal
+            graphics.drawLine(xPressed, yPressed, xReleased, yPressed);
+            //vertical
+            graphics.drawLine(xReleased, yPressed, xReleased, yReleased);
         }
     }
 

@@ -2,6 +2,8 @@ package client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -41,7 +43,9 @@ public class ClientUI extends JFrame{
         canvas.setBorder(BorderFactory.createLineBorder(Color.black));
         canvasListener = new CanvasListener(canvas.getGraphics());
 
+        chatArea.setEditable(false);
 
+        //add listeners
         sendButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -56,7 +60,8 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                listModel.addElement("zxc");
+
+                listModel.removeElementAt(userList.getSelectedIndex());
 
             }
         });
@@ -64,16 +69,16 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                Graphics graphics = canvas.getGraphics();
+
                 canvasListener.setShape("Oval");
-                //graphics.drawOval(100, 100, 50, 5);
+
             }
         });
         triButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                Graphics graphics = canvas.getGraphics();
+
                 canvasListener.setShape("Triangle");
             }
         });
@@ -123,6 +128,14 @@ public class ClientUI extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 canvasListener.setShape("Line");
+            }
+        });
+        mainPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                //TODO show canvas after resize
+                //canvas.repaint();
             }
         });
     }
