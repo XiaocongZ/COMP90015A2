@@ -5,4 +5,9 @@ package client;
  * Boots up several threads for texting, drawing, etc.
  */
 public class Client {
+
+    public static void main(String[] args){
+        ClientUI myUI = new ClientUI();
+    }
+
 }

@@ -140,10 +140,7 @@ public class ClientUI extends JFrame{
         });
     }
 
-    public static void main(String[] args){
-        ClientUI myUI = new ClientUI();
 
-    }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
