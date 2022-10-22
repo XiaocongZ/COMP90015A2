@@ -9,6 +9,8 @@ public interface IRemoteUserList extends Remote {
     // adds user to the user list
     public void addUser(String userName) throws RemoteException;
 
+    public void removeUser(String userName) throws RemoteException;
+
     // gets the list of users connected to the server as of now
     List<String> getUserNames() throws RemoteException;
 

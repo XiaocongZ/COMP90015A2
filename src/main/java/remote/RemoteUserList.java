@@ -25,6 +25,11 @@ public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserLi
         System.out.println(Arrays.toString(userNames.toArray()));
     }
 
+    public void removeUser(String userName) throws RemoteException {
+        userNames.remove(userName);
+        System.out.println(Arrays.toString(userNames.toArray()));
+    }
+
     @Override
     public List<String> getUserNames() throws RemoteException {
         return userNames;

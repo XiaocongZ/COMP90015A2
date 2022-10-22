@@ -34,6 +34,9 @@ public class ClientUI extends JFrame{
     private JButton textButton;
     private JButton colorButton;
 
+    public DefaultListModel getListModel(){
+        return listModel;
+    }
     public ClientUI(){
         setTitle("WhiteBoard-Client");
         setSize(800, 500);
