@@ -10,7 +10,7 @@ public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserLi
 
     private String managerName = null;
 
-    private List<String> userNames;
+    private List<String> userNames = null;
 
     public RemoteUserList() throws RemoteException{
         userNames = new ArrayList<>();
