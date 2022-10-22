@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 //TODO tool bar for saving file
 //TODO event
 //TODO event listener
-//TODO thread safety of ClientUserList
+//TODO disable kick self
 public class ClientUI extends JFrame{
     //private DefaultListModel listModel;
 
@@ -40,6 +40,7 @@ public class ClientUI extends JFrame{
     private JButton colorButton;
     private JButton saveButton;
     private JButton loadButton;
+    private JButton newButton;
 
     /*
     public DefaultListModel getListModel(){
@@ -53,7 +54,7 @@ public class ClientUI extends JFrame{
     */
     public ClientUI(ClientUserList clientUserList){
         setTitle("WhiteBoard-Client");
-        setSize(800, 500);
+        setSize(800, 515);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
@@ -179,6 +180,25 @@ public class ClientUI extends JFrame{
                 super.componentResized(e);
                 //TODO show canvas after resize
                 //canvas.repaint();
+            }
+        });
+        saveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+            }
+        });
+        loadButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
+        newButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
             }
         });
     }

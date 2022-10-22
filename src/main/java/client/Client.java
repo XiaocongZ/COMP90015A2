@@ -58,6 +58,10 @@ public class Client {
         DefaultListModel listModel = new DefaultListModel();
         this.clientUserList = new ClientUserList(listModel, remoteUserList);
         ClientUI myUI = new ClientUI(clientUserList);
+        Thread userUpdator = new Thread(new UserThread(clientUserList));
+        userUpdator.setDaemon(true);
+        userUpdator.start();
+
     }
 
 }

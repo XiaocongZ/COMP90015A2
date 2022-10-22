@@ -11,12 +11,13 @@ public class UserThread implements Runnable{
     private ClientUserList clientUserList;
 
     public UserThread(ClientUserList clientUserList){
-        Thread.currentThread().setDaemon(true);
         this.clientUserList = clientUserList;
+
     }
 
     @Override
     public void run() {
+
         while(true){
             try{
                 clientUserList.update();

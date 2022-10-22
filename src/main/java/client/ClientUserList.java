@@ -10,7 +10,7 @@ import java.util.concurrent.locks.Lock;
 
 public class ClientUserList {
 
-    private Lock userlistLock = new ReentrantLock();
+    private Lock userlistLock;
 
     //acquire when modifying listModel
     private DefaultListModel listModel;
@@ -31,6 +31,7 @@ public class ClientUserList {
             this.listModel = new DefaultListModel();
         }
         this.remoteUserList = remoteUserList;
+        this.userlistLock = new ReentrantLock();
 
     }
 
@@ -40,7 +41,7 @@ public class ClientUserList {
      * @throws RemoteException
      */
     synchronized public void add(String name) throws RemoteException {
-
+        userlistLock.lock();
         listModel.addElement(name);
         userlistLock.unlock();
 
@@ -62,8 +63,20 @@ public class ClientUserList {
     public void update() throws RemoteException {
         List<String> users = remoteUserList.getUserNames();
         userlistLock.lock();
-        listModel.removeAllElements();
+        for(Object currentUser: listModel.toArray()){
+            if(!users.contains(currentUser)){
+                listModel.removeElement(currentUser);
+            }
+            else{
+                users.remove(currentUser);
+            }
+        }
         listModel.addAll(users);
+
+
+        //selected user would lost
+        //listModel.removeAllElements();
+        //listModel.addAll(users);
         userlistLock.unlock();
     }
 }
