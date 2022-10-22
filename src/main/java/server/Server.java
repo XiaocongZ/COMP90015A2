@@ -14,7 +14,7 @@ public class Server {
 
     private static int serverPort = 5859;
 
-    private static final String remoteUserListServerIdentifier = "serverRMIObject";
+    private static final String remoteUserListServerIdentifier = "RemoteUserList";
 
     public static void main(String[] args) {
 
@@ -27,7 +27,8 @@ public class Server {
 
             Registry registry = LocateRegistry.createRegistry(serverPort);
 
-            String remoteUserListUrl = "rmi://" + InetAddress.getLocalHost()+ ":" + String.valueOf(serverPort) + "/remoteUserList";
+            String remoteUserListUrl = "rmi://" + "127.0.0.1" + ":" +
+                    String.valueOf(serverPort) + "/" + remoteUserListServerIdentifier;
 
             System.out.println(remoteUserListUrl);
 
@@ -40,8 +41,6 @@ public class Server {
 
             System.out.println("Server RemoteException: " + e.getMessage());
 
-        } catch (UnknownHostException e) {
-            System.out.println("Server UnknownHostException: " + e.getMessage());
         }
 
     }

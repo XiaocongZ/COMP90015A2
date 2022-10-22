@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 /**
  * The main class in package @see COMP90015G72.client
@@ -15,7 +17,7 @@ import java.rmi.RemoteException;
  */
 public class Client {
 
-    private static final String remoteUserListName = "remoteUserList";
+    private static final String remoteUserListName = "RemoteUserList";
     private static int serverPort = 5859;
 
     public static void main(String[] args){
@@ -26,21 +28,18 @@ public class Client {
 
         try{
             String remoteUserListURL =
-                    "rmi://" +
-                    InetAddress.getLocalHost().getHostAddress()+
+                    "rmi://" + "127.0.0.1"+
                     ":" +
                     String.valueOf(serverPort) + "/" + remoteUserListName;
 
             System.out.println(remoteUserListURL);
+            Registry registry = LocateRegistry.getRegistry(serverPort);
+            remoteUserList = (IRemoteUserList) registry.lookup(remoteUserListURL);
 
-            remoteUserList = (IRemoteUserList) Naming.lookup(remoteUserListURL);
-
-            System.out.println("completed");
-
-            System.out.println(remoteUserList.getUserNames());
+            
             System.out.println("Successfully retrieved remote user list");
 
-        } catch (MalformedURLException | NotBoundException | RemoteException | UnknownHostException e) {
+        } catch (NotBoundException | RemoteException e) {
             System.out.println("Exception when retrieving remote user list: " + e);
         }
 
