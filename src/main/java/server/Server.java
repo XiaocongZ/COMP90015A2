@@ -27,7 +27,9 @@ public class Server {
 
             Registry registry = LocateRegistry.createRegistry(serverPort);
 
-            String remoteUserListUrl = "rmi://" + "127.0.0.1" + ":" +
+            String IPaddress = "127.0.0.1";
+
+            String remoteUserListUrl = "rmi://" + IPaddress + ":" +
                     String.valueOf(serverPort) + "/" + remoteUserListServerIdentifier;
 
             System.out.println(remoteUserListUrl);

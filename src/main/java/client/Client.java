@@ -24,11 +24,11 @@ public class Client {
 
         ClientUI myUI = new ClientUI();
         IRemoteUserList remoteUserList = null;
-
+        String IPaddress = "127.0.0.1";
 
         try{
             String remoteUserListURL =
-                    "rmi://" + "127.0.0.1"+
+                    "rmi://" + IPaddress +
                     ":" +
                     String.valueOf(serverPort) + "/" + remoteUserListName;
 
@@ -36,7 +36,7 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(serverPort);
             remoteUserList = (IRemoteUserList) registry.lookup(remoteUserListURL);
 
-            
+
             System.out.println("Successfully retrieved remote user list");
 
         } catch (NotBoundException | RemoteException e) {
