@@ -38,6 +38,9 @@ public class ClientUI extends JFrame{
     private JButton freeButton;
     private JButton textButton;
     private JButton colorButton;
+    private JButton saveButton;
+    private JButton loadButton;
+
     /*
     public DefaultListModel getListModel(){
         return listModel;
@@ -178,9 +181,5 @@ public class ClientUI extends JFrame{
                 //canvas.repaint();
             }
         });
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }

@@ -5,8 +5,14 @@ import remote.IRemoteUserList;
 import javax.swing.*;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 
 public class ClientUserList {
+
+    private Lock userlistLock = new ReentrantLock();
+
+    //acquire when modifying listModel
     private DefaultListModel listModel;
     private IRemoteUserList remoteUserList;
 
@@ -28,19 +34,36 @@ public class ClientUserList {
 
     }
 
-    public void add(String name) throws RemoteException {
+    /**
+     * Only call once when log into server, after first update()
+     * @param name
+     * @throws RemoteException
+     */
+    synchronized public void add(String name) throws RemoteException {
+
         listModel.addElement(name);
+        userlistLock.unlock();
+
         remoteUserList.addUser(name);
+
     }
 
-    public void removeElement(String name) throws RemoteException {
+    synchronized public void removeElement(String name) throws RemoteException {
+        userlistLock.lock();
         listModel.removeElement(name);
+        userlistLock.unlock();
         remoteUserList.removeUser(name);
     }
 
-    public void update() throws RemoteException {
+    /**
+     * Only invoked by updating thread, not by user's event
+     * @throws RemoteException
+     */
+    synchronized public void update() throws RemoteException {
         List<String> users = remoteUserList.getUserNames();
+        userlistLock.lock();
         listModel.removeAllElements();
         listModel.addAll(users);
+        userlistLock.unlock();
     }
 }
