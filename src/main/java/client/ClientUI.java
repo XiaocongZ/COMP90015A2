@@ -1,11 +1,18 @@
 package client;
 
+import org.w3c.dom.css.RGBColor;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 //TODO user name before message
@@ -20,6 +27,7 @@ public class ClientUI extends JFrame{
     private JPanel mainPanel;
 
     private JPanel canvas;
+    private BufferedImage bImg;
 
     private CanvasListener canvasListener;
     private JButton sendButton;
@@ -58,11 +66,17 @@ public class ClientUI extends JFrame{
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
+
         setContentPane(mainPanel);
         setVisible(true);
 
         canvas.setBorder(BorderFactory.createLineBorder(Color.black));
-        canvasListener = new CanvasListener(canvas.getGraphics());
+        bImg = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D imgGraphics = bImg.createGraphics();
+        imgGraphics.setBackground(Color.white);
+
+        canvasListener = new CanvasListener( canvas.getGraphics(), imgGraphics);
+
 
         chatArea.setEditable(false);
 
@@ -157,6 +171,7 @@ public class ClientUI extends JFrame{
                 super.mouseClicked(e);
                 Color c = JColorChooser.showDialog(canvas, "Choose color", null);
                 canvasListener.getGraphics().setColor(c);
+                bImg.getGraphics().setColor(c);
 
             }
         });
@@ -186,6 +201,16 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                File f = new File("screenshot.png");
+                try {
+
+                    ImageIO.write(bImg, "png", f);
+
+                    System.out.println("saved");
+                } catch (IOException ex) {
+                    System.err.println("Save file failed: " + ex);
+                }
+
 
             }
         });
@@ -193,13 +218,30 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                File f = new File("screenshot.png");
+                try {
+                    bImg = ImageIO.read(f);
+                } catch (IOException ex) {
+                    System.err.println("Load file failed: " + ex);
+                }
+
+                canvas.getGraphics().drawImage(bImg, 0, 0, null);
+
+                canvasListener.setImgGraphics(bImg.getGraphics());
+
+                System.out.println("Loaded");
+
             }
         });
         newButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                String filename = (String) JOptionPane.showInputDialog(canvas, "Do you want to save current graphics?", "save", JOptionPane.PLAIN_MESSAGE, null, new String[]{"yes", "no"}, "yes");
+                System.out.println(filename);
             }
         });
     }
+
+
 }
