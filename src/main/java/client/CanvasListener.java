@@ -43,10 +43,11 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         int yClikcked = e.getY();
         if(shape == "Text") {
             String text = JOptionPane.showInputDialog("Annotate:");
-            Font f = new Font(null, Font.PLAIN,  10);
-            graphics.setFont(f);
-            graphics.drawString(text, xClicked, yClikcked);
-
+            if(text!=null) {
+                Font f = new Font(null, Font.PLAIN, 10);
+                graphics.setFont(f);
+                graphics.drawString(text, xClicked, yClikcked);
+            }
         }
     }
 

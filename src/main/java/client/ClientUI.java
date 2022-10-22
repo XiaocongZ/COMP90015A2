@@ -6,7 +6,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+//TODO user name before message
+//TODO tool bar for saving file
+//TODO event
+//TODO event listener
 public class ClientUI extends JFrame{
     private DefaultListModel listModel;
     private JPanel mainPanel;
@@ -60,9 +63,9 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-
-                listModel.removeElementAt(userList.getSelectedIndex());
-
+                if(userList.getSelectedIndex() != -1) {
+                    listModel.removeElementAt(userList.getSelectedIndex());
+                }
             }
         });
         ovalButton.addMouseListener(new MouseAdapter() {
@@ -142,7 +145,6 @@ public class ClientUI extends JFrame{
 
     public static void main(String[] args){
         ClientUI myUI = new ClientUI();
-
     }
 
     private void createUIComponents() {
