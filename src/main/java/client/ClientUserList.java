@@ -10,10 +10,22 @@ public class ClientUserList {
     private DefaultListModel listModel;
     private IRemoteUserList remoteUserList;
 
+    public DefaultListModel getListModel(){
+        return listModel;
+    }
+
+    public void setListModel(DefaultListModel listModel){
+        this.listModel = listModel;
+    }
 
     public ClientUserList(DefaultListModel listModel, IRemoteUserList remoteUserList){
-        this.listModel = listModel;
+        if(listModel!=null) {
+            this.listModel = listModel;
+        }else{
+            this.listModel = new DefaultListModel();
+        }
         this.remoteUserList = remoteUserList;
+
     }
 
     public void add(String name) throws RemoteException {
@@ -21,7 +33,7 @@ public class ClientUserList {
         remoteUserList.addUser(name);
     }
 
-    public void delete(String name) throws RemoteException {
+    public void removeElement(String name) throws RemoteException {
         listModel.removeElement(name);
         remoteUserList.removeUser(name);
     }

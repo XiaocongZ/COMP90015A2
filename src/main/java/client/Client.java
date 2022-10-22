@@ -34,9 +34,7 @@ public class Client {
 
     public Client(String name){
         this.name =name;
-        ClientUI myUI = new ClientUI();
 
-        DefaultListModel listModel = myUI.getListModel();
         IRemoteUserList remoteUserList = null;
         String IPaddress = "127.0.0.1";
 
@@ -57,7 +55,9 @@ public class Client {
             System.out.println("Exception when retrieving remote user list: " + e);
         }
 
-        clientUserList = new ClientUserList(listModel, remoteUserList);
+        DefaultListModel listModel = new DefaultListModel();
+        this.clientUserList = new ClientUserList(listModel, remoteUserList);
+        ClientUI myUI = new ClientUI(clientUserList);
     }
 
 }

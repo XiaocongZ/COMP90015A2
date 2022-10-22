@@ -6,12 +6,17 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
+
 //TODO user name before message
 //TODO tool bar for saving file
 //TODO event
 //TODO event listener
+//TODO thread safety of ClientUserList
 public class ClientUI extends JFrame{
-    private DefaultListModel listModel;
+    //private DefaultListModel listModel;
+
+    private ClientUserList clientUserList;
     private JPanel mainPanel;
 
     private JPanel canvas;
@@ -33,11 +38,17 @@ public class ClientUI extends JFrame{
     private JButton freeButton;
     private JButton textButton;
     private JButton colorButton;
-
+    /*
     public DefaultListModel getListModel(){
         return listModel;
     }
-    public ClientUI(){
+
+    public void setListModel(DefaultListModel listModel){
+        this.listModel = listModel;
+    }
+
+    */
+    public ClientUI(ClientUserList clientUserList){
         setTitle("WhiteBoard-Client");
         setSize(800, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -50,6 +61,24 @@ public class ClientUI extends JFrame{
         canvasListener = new CanvasListener(canvas.getGraphics());
 
         chatArea.setEditable(false);
+
+        if(clientUserList != null){
+            this.clientUserList = clientUserList;
+        }
+
+        userList = new JList(clientUserList.getListModel());
+
+        userPane.getViewport().add(userList);
+
+        try {
+            clientUserList.add("JOHN");
+            clientUserList.add("Doe");
+            clientUserList.add("shawn");
+            clientUserList.add("yukash");
+        } catch (RemoteException e) {
+            System.err.println("RemoteException when add user: " + e);
+        }
+
 
         //add listeners
         sendButton.addMouseListener(new MouseAdapter() {
@@ -66,8 +95,13 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(userList.getSelectedIndex() != -1) {
-                    listModel.removeElementAt(userList.getSelectedIndex());
+                if(userList.getSelectedValue() != null) {
+                    try {
+                        clientUserList.removeElement((String) userList.getSelectedValue());
+                    }
+                    catch (RemoteException er){
+                        System.err.println("RemoteException when kick user: " + er);
+                    }
                 }
             }
         });
@@ -148,14 +182,5 @@ public class ClientUI extends JFrame{
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        listModel = new DefaultListModel();
-        listModel.addElement("Jane Doe");
-        listModel.addElement("John Smith");
-        listModel.addElement("Kathy Green");
-
-        userList = new JList(listModel);
-        userPane = new JScrollPane();
-        userPane.getViewport().add(userList);
-
     }
 }
