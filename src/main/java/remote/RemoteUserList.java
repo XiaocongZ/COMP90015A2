@@ -1,11 +1,12 @@
 package remote;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RemoteUserList implements IRemoteUserList{
+public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserList{
 
     private String managerName = null;
 

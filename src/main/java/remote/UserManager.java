@@ -1,6 +1,7 @@
 package remote;
 
 import javax.naming.CommunicationException;
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class UserManager {
     private IRemoteUserList remoteUserList;
 
     // list of candidate users (don't know the purpose of this yet)
+    // none of the candidate user functions will be implemented
     private List<String> candidateUsers;
 
     public UserManager() {
@@ -35,22 +37,42 @@ public class UserManager {
     * */
     public synchronized String addUser(String userName){
 
-        String uid = String.format("%s (%d)", userName, userCounter);
+        String userID = String.format("%s (%d)", userName, userCounter);
 
         try{
 
             if (managerID == null){
-                managerID = uid;
+                managerID = userID;
                 remoteUserList.setManagerName(managerID);
             }else{
-                remoteUserList.addUser(uid);
+                remoteUserList.addUser(userID);
             }
 
         }catch (RemoteException e){
             System.out.println("UserManager class addUser method Remote Exception: " + e.getMessage());
         }
 
-        return uid;
+        return userID;
+
+    }
+
+    public void setRemoteUserList(IRemoteUserList remoteUserList){
+        this.remoteUserList = remoteUserList;
+    }
+
+    // not very sure of this function yet
+    public synchronized void removeUser(String userID){
+        try{
+            if (remoteUserList.getUserNames().contains(userID)){
+                remoteUserList.getUserNames().remove(userID);
+            }
+        } catch (IOException e){
+            System.out.println("UserManager class | removeUser method IOException: " + e.getMessage());
+        }
+
+        if (usersIDList.containsKey(userID)){
+            usersIDList.remove(userID);
+        }
 
     }
 
