@@ -59,7 +59,7 @@ public class ClientUserList {
      * Only invoked by updating thread, not by user's event
      * @throws RemoteException
      */
-    synchronized public void update() throws RemoteException {
+    public void update() throws RemoteException {
         List<String> users = remoteUserList.getUserNames();
         userlistLock.lock();
         listModel.removeAllElements();
