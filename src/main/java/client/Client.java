@@ -3,10 +3,14 @@ package client;
 import remote.IRemoteUserList;
 
 import javax.swing.*;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 /**
  * The main class in package @see COMP90015G72.client
@@ -14,7 +18,8 @@ import java.rmi.RemoteException;
  */
 public class Client {
 
-    private static final String remoteUserListURL = "//localhost/serverRMIObject";
+    private static final String remoteUserListName = "RemoteUserList";
+    private static int serverPort = 5859;
 
     private final String name;
 
@@ -33,13 +38,23 @@ public class Client {
 
         DefaultListModel listModel = myUI.getListModel();
         IRemoteUserList remoteUserList = null;
+        String IPaddress = "127.0.0.1";
 
         try{
-            remoteUserList = (IRemoteUserList) Naming.lookup(remoteUserListURL);
+            String remoteUserListURL =
+                    "rmi://" + IPaddress +
+                    ":" +
+                    String.valueOf(serverPort) + "/" + remoteUserListName;
+
+            System.out.println(remoteUserListURL);
+            Registry registry = LocateRegistry.getRegistry(serverPort);
+            remoteUserList = (IRemoteUserList) registry.lookup(remoteUserListURL);
+
+
             System.out.println("Successfully retrieved remote user list");
 
-        } catch (MalformedURLException | NotBoundException | RemoteException e) {
-            System.out.println("Exception when retrieving remote user list: " + e.getMessage());
+        } catch (NotBoundException | RemoteException e) {
+            System.out.println("Exception when retrieving remote user list: " + e);
         }
 
         clientUserList = new ClientUserList(listModel, remoteUserList);
