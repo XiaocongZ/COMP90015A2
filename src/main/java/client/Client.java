@@ -1,7 +1,7 @@
 package client;
 
 import remote.IRemoteCP;
-import remote.IRemoteMessages;
+
 import remote.IRemoteUserList;
 
 import javax.swing.*;
@@ -70,10 +70,10 @@ public class Client {
 
         IRemoteUserList remoteUserList = (IRemoteUserList) lookupRemote(remoteUserListName);
         IRemoteCP<String> remoteMessages = (IRemoteCP<String>) lookupRemote(remoteMessagesIdentifier);
-        IRemoteCP<String[]> remoteCommand = (IRemoteCP<String[]>) lookupRemote(remoteCommandsIdentifier);
+        IRemoteCP<Command> remoteCommand = (IRemoteCP<Command>) lookupRemote(remoteCommandsIdentifier);
 
 
-        //The order of constructing is intertwined
+        //The order of constructing is intertwined...
 
         DefaultListModel listModel = new DefaultListModel();
         this.clientUserList = new ClientUserList(listModel, remoteUserList);

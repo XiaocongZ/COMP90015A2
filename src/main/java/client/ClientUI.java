@@ -14,6 +14,7 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -78,6 +79,7 @@ public class ClientUI extends JFrame{
 
         setContentPane(mainPanel);
         setVisible(true);
+        setResizable(false);
 
         canvas.setBorder(BorderFactory.createLineBorder(Color.black));
         bImg = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -189,8 +191,10 @@ public class ClientUI extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Color c = JColorChooser.showDialog(canvas, "Choose color", null);
+
                 canvas.getGraphics().setColor(c);
                 bImg.getGraphics().setColor(c);
+                canvasListener.setColor(c);
 
             }
         });
@@ -260,9 +264,9 @@ public class ClientUI extends JFrame{
         });
     }
 
-    public void draw(String[] command){
+    public void draw(Command command){
         //TODO username
-        if(command[0] == "CanvasListener"){
+        if(Objects.equals(command.name, "CanvasListener..")){
             return;
         }
         drawLock.lock();
@@ -276,34 +280,35 @@ public class ClientUI extends JFrame{
      * @param command
      * @param graphics
      */
-    private void draw(String[] command, Graphics graphics){
-
-        switch (command[1]){
+    private void draw(Command command, Graphics graphics){
+        graphics.setColor(command.color);
+        System.out.println(command.toString());
+        switch (command.shape){
             case "Line":
-                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawLine(command.num1, command.num2, command.num3, command.num4);
                 break;
             case "Oval":
-                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawOval(command.num1, command.num2, command.num3, command.num4);
                 break;
             case "Circle":
-                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawOval(command.num1, command.num2, command.num3, command.num3);
                 break;
             case "Rect":
-                graphics.drawRect(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawRect(command.num1, command.num2, command.num3, command.num4);
                 break;
             case "Free":
-                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawOval(command.num1, command.num2, 2, 2);
                 break;
             case "Triangle":
-                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
-                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[3]));
-                graphics.drawLine(Integer.valueOf(command[4]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawLine(command.num1, command.num2, command.num3, command.num4);
+                graphics.drawLine(command.num1, command.num2, command.num3, command.num2);
+                graphics.drawLine(command.num3, command.num2, command.num3, command.num4);
                 break;
             case "Text":
                 //name type size string x y
-                Font f = new Font(null, Font.PLAIN, Integer.valueOf(command[2]));
+                Font f = new Font(null, Font.PLAIN, command.num1);
                 graphics.setFont(f);
-                graphics.drawString(command[3], Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawString(command.str1, command.num2, command.num3);
                 break;
 
         }

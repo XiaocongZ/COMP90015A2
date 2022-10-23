@@ -1,7 +1,7 @@
 package server;
 
+import client.Command;
 import remote.RemoteCP;
-import remote.RemoteMessages;
 import remote.RemoteUserList;
 
 import java.net.InetAddress;
@@ -28,7 +28,7 @@ public class Server {
 
             // this calls in a remote object
             RemoteUserList remoteUserList = new RemoteUserList();
-            RemoteCP<String[]> remoteCommands = new RemoteCP<String[]>("RemoteCPCommand");
+            RemoteCP<Command> remoteCommands = new RemoteCP<>("RemoteCPCommand");
             RemoteCP<String> remoteMessages = new RemoteCP<String>("RemoteCPMessage");
 
             Registry registry = LocateRegistry.createRegistry(serverPort);

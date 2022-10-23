@@ -1,7 +1,6 @@
 package client;
 
 import remote.IRemoteCP;
-import remote.IRemoteMessages;
 
 import javax.swing.*;
 import java.rmi.RemoteException;

@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface IRemoteCP<T> extends Remote {
-    public int commit(T message) throws RemoteException;
+    public int commit(T item) throws RemoteException;
 
     /*
      * Given an index, the method returns messages starting from the index

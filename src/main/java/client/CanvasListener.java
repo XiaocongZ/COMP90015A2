@@ -13,6 +13,8 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
     private String shape;
 
+    private Color color;
+
     private ClientUI clientUI;
 
     private ClientDrawer clientDrawer;
@@ -24,6 +26,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     public CanvasListener(ClientUI clientUI){
         this.clientUI = clientUI;
         shape = "None";
+        color = Color.black;
     }
 
     private int xPressed;
@@ -49,6 +52,9 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     public void setShape(String shape){
         this.shape = shape;
     }
+    public void setColor(Color color){
+        this.color = color;
+    }
     @Override
     public void mouseClicked(MouseEvent e) {
         int xClicked = e.getX();
@@ -66,51 +72,30 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
         xReleased = e.getX();
         yReleased = e.getY();
-        String[] command = null;
-        if(shape=="Oval"){
-            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
-                    String.valueOf(Math.min(yPressed, yReleased)),
-                    String.valueOf(Math.abs(xPressed - xReleased)),
-                    String.valueOf(Math.abs(yPressed - yReleased))};
+        Command command = new Command(name, shape, color);
+        if(shape=="Oval" || shape=="Rect" || shape=="Circle"){
+            command.num1 = Math.min(xPressed, xReleased);
+            command.num2 = Math.min(yPressed, yReleased);
+            command.num3 = Math.abs(xPressed - xReleased);
+            command.num4 = Math.abs(yPressed - yReleased);
             clientUI.draw(command);
-
-        } else if (shape=="Rect") {
-            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
-                    String.valueOf(Math.min(yPressed, yReleased)),
-                    String.valueOf(Math.abs(xPressed - xReleased)),
-                    String.valueOf(Math.abs(yPressed - yReleased))};
+        } else if (shape=="Line" || shape=="Triangle") {
+            command.num1 = xPressed;
+            command.num2 = yPressed;
+            command.num3 = xReleased;
+            command.num4 = yReleased;
             clientUI.draw(command);
-        } else if (shape=="Circle") {
-            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
-                    String.valueOf(Math.min(yPressed, yReleased)),
-                    String.valueOf(Math.abs(xPressed - xReleased)),
-                    String.valueOf(Math.abs(xPressed - xReleased))};
-            clientUI.draw(command);
-        } else if (shape=="Line") {
-            command = new String[]{name, shape, String.valueOf(xPressed),
-                    String.valueOf(yPressed),
-                    String.valueOf(xReleased),
-                    String.valueOf(yReleased)};
-            clientUI.draw(command);
-        } else if (shape=="Triangle") {
-            command = new String[]{name, shape, String.valueOf(xPressed),
-                    String.valueOf(yPressed),
-                    String.valueOf(xReleased),
-                    String.valueOf(yReleased)};
-
-            clientUI.draw(command);
-
         } else if (shape=="Text") {
             String text = JOptionPane.showInputDialog("Annotate:");
             if(text!=null) {
-                command = new String[]{name, shape, String.valueOf(Math.max(Math.abs(xPressed - xReleased), 5)),
-                        text,
-                        String.valueOf(xPressed),
-                        String.valueOf(yPressed)};
+                command.str1 = text;
+                command.num1 = 5;
+                command.num2 = xPressed;
+                command.num3 = yPressed;
                 clientUI.draw(command);
             }
         }
-        if(command != null) {
+        if(command.shape != "None") {
             try {
 
                 clientDrawer.commit(command);
@@ -135,12 +120,18 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         int xDragged = e.getX();
         int yDragged = e.getY();
         if(shape == "Free"){
-            String[] command = new String[]{name, shape, String.valueOf(xDragged),
-                    String.valueOf(yDragged),
-                    String.valueOf(2),
-                    String.valueOf(2)};
-            clientUI.draw(command);
+            Command command = new Command(name, shape, color);
+            command.num1 = xDragged;
+            command.num2 = yDragged;
+            command.num3 = 2;
+            command.num4 = 2;
 
+            clientUI.draw(command);
+            try {
+                clientDrawer.commit(command);
+            } catch (RemoteException ex) {
+                System.err.println("RemoteException when commit draw: " + ex);
+            }
         }
     }
 
