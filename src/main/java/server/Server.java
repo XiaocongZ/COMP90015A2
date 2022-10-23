@@ -1,5 +1,7 @@
 package server;
 
+import remote.RemoteCommands;
+import remote.RemoteMessages;
 import remote.RemoteUserList;
 
 import java.net.InetAddress;
@@ -15,6 +17,8 @@ public class Server {
     private static int serverPort = 5859;
 
     private static final String remoteUserListServerIdentifier = "RemoteUserList";
+    private static final String remoteRemoteCommandsIdentifier = "RemoteCommands";
+    private static final String remoteRemoteMessagesIdentifier = "RemoteMessages";
 
     public static void main(String[] args) {
 
@@ -24,6 +28,8 @@ public class Server {
 
             // this calls in a remote object
             RemoteUserList remoteUserList = new RemoteUserList();
+            RemoteCommands remoteCommands = new RemoteCommands();
+            RemoteMessages remoteMessages = new RemoteMessages();
 
             Registry registry = LocateRegistry.createRegistry(serverPort);
 
@@ -31,10 +37,16 @@ public class Server {
 
             String remoteUserListUrl = "rmi://" + IPaddress + ":" +
                     String.valueOf(serverPort) + "/" + remoteUserListServerIdentifier;
+            String remoteCommandsUrl = "rmi://" + IPaddress + ":" +
+                    String.valueOf(serverPort) + "/" + remoteRemoteCommandsIdentifier;
+            String remoteMessagesUrl = "rmi://" + IPaddress + ":" +
+                    String.valueOf(serverPort) + "/" + remoteRemoteMessagesIdentifier;
 
             System.out.println(remoteUserListUrl);
 
             registry.rebind(remoteUserListUrl, remoteUserList);
+            registry.rebind(remoteCommandsUrl, remoteCommands);
+            registry.rebind(remoteMessagesUrl, remoteMessages);
 
             System.out.println("Server is ready");
 
