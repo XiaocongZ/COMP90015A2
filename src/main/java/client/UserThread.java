@@ -22,7 +22,7 @@ public class UserThread implements Runnable{
                 clientUserList.update();
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                System.err.println("InterruptedException when UserThread: " + e);
+                System.err.println("InterruptedException when UserThread update: " + e);
             } catch (RemoteException e) {
                 System.err.println("RemoteException when UserThread update: " + e);
             }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 //TODO user name before message
-//TODO tool bar for saving file
+//TODO new file
 //TODO event
 //TODO event listener
 //TODO disable kick self
@@ -24,6 +24,8 @@ public class ClientUI extends JFrame{
     //private DefaultListModel listModel;
 
     private ClientUserList clientUserList;
+
+    private ClientMessenger clientMessenger;
     private JPanel mainPanel;
 
     private JPanel canvas;
@@ -31,6 +33,7 @@ public class ClientUI extends JFrame{
 
     private CanvasListener canvasListener;
     private JButton sendButton;
+
     private JButton kickButton;
 
     private JTextField chatInputField;
@@ -50,22 +53,14 @@ public class ClientUI extends JFrame{
     private JButton loadButton;
     private JButton newButton;
 
-    /*
-    public DefaultListModel getListModel(){
-        return listModel;
+    public ClientMessenger getClientMessenger() {
+        return clientMessenger;
     }
 
-    public void setListModel(DefaultListModel listModel){
-        this.listModel = listModel;
-    }
-
-    */
     public ClientUI(ClientUserList clientUserList){
         setTitle("WhiteBoard-Client");
         setSize(800, 515);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
 
         setContentPane(mainPanel);
         setVisible(true);
@@ -88,6 +83,7 @@ public class ClientUI extends JFrame{
 
         userPane.getViewport().add(userList);
 
+
         try {
             clientUserList.add("JOHN");
             clientUserList.add("Doe");
@@ -97,6 +93,8 @@ public class ClientUI extends JFrame{
             System.err.println("RemoteException when add user: " + e);
         }
 
+        clientMessenger = new ClientMessenger(chatArea);
+
 
         //add listeners
         sendButton.addMouseListener(new MouseAdapter() {
@@ -104,8 +102,11 @@ public class ClientUI extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 String msg = chatInputField.getText();
-                msg = chatArea.getText() + msg + "\n";
-                chatArea.setText(msg);
+                try {
+                    clientMessenger.commit(msg);
+                } catch (RemoteException ex) {
+                    System.err.println("RemoteException when send message: " + ex);
+                }
                 chatInputField.setText("");
             }
         });

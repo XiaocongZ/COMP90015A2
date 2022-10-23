@@ -14,8 +14,8 @@ public interface IRemoteMessages extends Remote {
     public int commit(String message) throws RemoteException;
 
     /*
-    * Given an index, the method returns all the messages following the index mentioned
+    * Given an index, the method returns messages starting from the index
     * */
-    public DefaultListModel<String> poll(Integer index) throws RemoteException;
+    public List<String> poll(Integer index) throws RemoteException;
 
 }

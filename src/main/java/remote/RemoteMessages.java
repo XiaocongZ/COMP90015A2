@@ -3,47 +3,51 @@ package remote;
 import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class RemoteMessages extends UnicastRemoteObject implements IRemoteMessages {
 
-    private DefaultListModel<String> messageQueue;
-    private Integer currentIndex;
+    private ArrayList<String> messageArray;
+
+    private Lock messageLock;
 
     public RemoteMessages() throws RemoteException {
         super();
-        this.messageQueue = new DefaultListModel<String>();
-        this.currentIndex = 0;
+        this.messageArray = new ArrayList<String>();
+        messageLock = new ReentrantLock();
     }
 
     @Override
     public int commit(String message) throws RemoteException {
         System.out.println("Adding elements to message Queue");
-        messageQueue.add(currentIndex, message);
-        currentIndex++;
-        return (currentIndex - 1);
+        messageLock.lock();
+        messageArray.add(message);
+        int index = messageArray.size() - 1;
+        messageLock.unlock();
+        System.out.println(messageArray.toString());
+        //return the index
+        return index;
     }
 
+    /**
+     * No locking design for poll, for now
+     * @param index
+     * @return
+     * @throws RemoteException
+     */
     @Override
-    public DefaultListModel<String> poll(Integer index) throws RemoteException {
+    public List<String> poll(Integer index) throws RemoteException {
 
-        System.out.println("Polling items out of messageQueue");
+        System.out.println("Polling " + index);
 
-        Integer sizeOfList = messageQueue.size();
-        DefaultListModel<String> pollResultList = new DefaultListModel<String>();
-
-        if (index >= sizeOfList) {
-            System.out.println("(RemoteMessaging class) (Poll method) Index provided is out of bounds");
+        if (index >= messageArray.size()) {
+            System.out.println("(RemoteMessaging class) (Poll method) Index already updated");
             return null;
         }
-
-        for (int i = index; i < sizeOfList; i++) {
-
-            String tempMessage = messageQueue.get(i);
-            pollResultList.addElement(tempMessage);
-
-        }
-
-        return pollResultList;
-
+        ArrayList<String> res = new ArrayList<String>(messageArray.subList(index, messageArray.size()));
+        return res;
     }
 }
