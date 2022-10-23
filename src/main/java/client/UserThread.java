@@ -12,7 +12,6 @@ public class UserThread implements Runnable{
 
     public UserThread(ClientUserList clientUserList){
         this.clientUserList = clientUserList;
-
     }
 
     @Override

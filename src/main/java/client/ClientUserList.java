@@ -71,6 +71,7 @@ public class ClientUserList {
                 users.remove(currentUser);
             }
         }
+
         listModel.addAll(users);
 
 
