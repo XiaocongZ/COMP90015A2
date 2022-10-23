@@ -1,5 +1,6 @@
 package client;
 
+import remote.IRemoteCP;
 import remote.IRemoteMessages;
 import remote.IRemoteUserList;
 
@@ -30,6 +31,8 @@ public class Client {
     private ClientUserList clientUserList;
 
     private ClientMessenger clientMessenger;
+
+    private ClientDrawer clientDrawer;
 
 
     public static void main(String[] args){
@@ -66,13 +69,17 @@ public class Client {
         this.name =name;
 
         IRemoteUserList remoteUserList = (IRemoteUserList) lookupRemote(remoteUserListName);
-        IRemoteMessages remoteMessages = (IRemoteMessages) lookupRemote(remoteMessagesIdentifier);
+        IRemoteCP<String> remoteMessages = (IRemoteCP<String>) lookupRemote(remoteMessagesIdentifier);
+        IRemoteCP<String[]> remoteCommand = (IRemoteCP<String[]>) lookupRemote(remoteCommandsIdentifier);
 
 
         //The order of constructing is intertwined
+
         DefaultListModel listModel = new DefaultListModel();
         this.clientUserList = new ClientUserList(listModel, remoteUserList);
         ClientUI myUI = new ClientUI(clientUserList);
+        this.clientDrawer = new ClientDrawer(myUI, remoteCommand);
+        myUI.setClientDrawer(clientDrawer);
 
         Thread userUpdator = new Thread(new UserThread(clientUserList));
         userUpdator.setDaemon(true);
@@ -83,6 +90,10 @@ public class Client {
         Thread messengerUpdator = new Thread(new MessengerThread(clientMessenger));
         messengerUpdator.setDaemon(true);
         messengerUpdator.start();
+
+        Thread drawingUpdator = new Thread(new DrawingThread(clientDrawer));
+        drawingUpdator.setDaemon(true);
+        drawingUpdator.start();
 
 
     }

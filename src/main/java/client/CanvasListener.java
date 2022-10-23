@@ -5,19 +5,24 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.rmi.RemoteException;
 
 
 public class CanvasListener implements MouseListener, MouseMotionListener {
+    private String name = "CanvasListener";
 
     private String shape;
 
-    private Graphics graphics;
+    private ClientUI clientUI;
 
-    private Graphics imgGraphics;
+    private ClientDrawer clientDrawer;
 
-    public CanvasListener(Graphics graphics, Graphics imgGraphics){
-        this.graphics = graphics;
-        this.imgGraphics = imgGraphics;
+    public void setClientDrawer(ClientDrawer clientDrawer) {
+        this.clientDrawer = clientDrawer;
+    }
+
+    public CanvasListener(ClientUI clientUI){
+        this.clientUI = clientUI;
         shape = "None";
     }
 
@@ -27,7 +32,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     private int xReleased;
 
     private int yReleased;
-
+    /*
     public void setGraphics(Graphics graphics) {
         this.graphics = graphics;
     }
@@ -39,6 +44,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     public void setImgGraphics(Graphics imgGraphics){
         this.imgGraphics = imgGraphics;
     }
+    */
 
     public void setShape(String shape){
         this.shape = shape;
@@ -57,39 +63,59 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
         xReleased = e.getX();
         yReleased = e.getY();
+        String[] command = null;
         if(shape=="Oval"){
-            graphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
-            imgGraphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
+            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
+                    String.valueOf(Math.min(yPressed, yReleased)),
+                    String.valueOf(Math.abs(xPressed - xReleased)),
+                    String.valueOf(Math.abs(yPressed - yReleased))};
+            clientUI.draw(command);
+
         } else if (shape=="Rect") {
-            graphics.drawRect(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
-            imgGraphics.drawRect(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(yPressed - yReleased));
+            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
+                    String.valueOf(Math.min(yPressed, yReleased)),
+                    String.valueOf(Math.abs(xPressed - xReleased)),
+                    String.valueOf(Math.abs(yPressed - yReleased))};
+            clientUI.draw(command);
         } else if (shape=="Circle") {
-            graphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(xPressed - xReleased));
-            imgGraphics.drawOval(Math.min(xPressed, xReleased), Math.min(yPressed, yReleased), Math.abs(xPressed - xReleased), Math.abs(xPressed - xReleased));
+            command = new String[]{name, shape, String.valueOf(Math.min(xPressed, xReleased)),
+                    String.valueOf(Math.min(yPressed, yReleased)),
+                    String.valueOf(Math.abs(xPressed - xReleased)),
+                    String.valueOf(Math.abs(xPressed - xReleased))};
+            clientUI.draw(command);
         } else if (shape=="Line") {
-            graphics.drawLine(xPressed, yPressed, xReleased, yReleased);
-            imgGraphics.drawLine(xPressed, yPressed, xReleased, yReleased);
+            command = new String[]{name, shape, String.valueOf(xPressed),
+                    String.valueOf(yPressed),
+                    String.valueOf(xReleased),
+                    String.valueOf(yReleased)};
+            clientUI.draw(command);
         } else if (shape=="Triangle") {
-            graphics.drawLine(xPressed, yPressed, xReleased, yReleased);
-            imgGraphics.drawLine(xPressed, yPressed, xReleased, yReleased);
-            //horizontal
-            graphics.drawLine(xPressed, yPressed, xReleased, yPressed);
-            imgGraphics.drawLine(xPressed, yPressed, xReleased, yPressed);
-            //vertical
-            graphics.drawLine(xReleased, yPressed, xReleased, yReleased);
-            imgGraphics.drawLine(xReleased, yPressed, xReleased, yReleased);
+            command = new String[]{name, shape, String.valueOf(xPressed),
+                    String.valueOf(yPressed),
+                    String.valueOf(xReleased),
+                    String.valueOf(yReleased)};
+
+            clientUI.draw(command);
+
         } else if (shape=="Text") {
-            if(shape == "Text") {
-                String text = JOptionPane.showInputDialog("Annotate:");
-                if(text!=null) {
-                    Font f = new Font(null, Font.PLAIN, Math.min(Math.abs(xPressed - xReleased), 5));
-                    graphics.setFont(f);
-                    graphics.drawString(text, xPressed, yPressed);
-                    imgGraphics.setFont(f);
-                    imgGraphics.drawString(text, xPressed, yPressed);
-                }
+            String text = JOptionPane.showInputDialog("Annotate:");
+            if(text!=null) {
+                command = new String[]{name, shape, String.valueOf(Math.max(Math.abs(xPressed - xReleased), 5)),
+                        text,
+                        String.valueOf(xPressed),
+                        String.valueOf(yPressed)};
+                clientUI.draw(command);
+            }
+        }
+        if(command != null) {
+            try {
+
+                clientDrawer.commit(command);
+            } catch (RemoteException ex) {
+                System.err.println("RemoteException when commit draw: " + ex);
             }
         }
     }
@@ -109,8 +135,11 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         int xDragged = e.getX();
         int yDragged = e.getY();
         if(shape == "Free"){
-            graphics.drawOval(xDragged, yDragged,2, 2);
-            imgGraphics.drawOval(xDragged, yDragged,2, 2);
+            String[] command = new String[]{name, shape, String.valueOf(xDragged),
+                    String.valueOf(yDragged),
+                    String.valueOf(2),
+                    String.valueOf(2)};
+            clientUI.draw(command);
 
         }
     }

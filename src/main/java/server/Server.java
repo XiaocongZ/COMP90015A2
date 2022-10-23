@@ -1,6 +1,6 @@
 package server;
 
-import remote.RemoteCommands;
+import remote.RemoteCP;
 import remote.RemoteMessages;
 import remote.RemoteUserList;
 
@@ -28,8 +28,8 @@ public class Server {
 
             // this calls in a remote object
             RemoteUserList remoteUserList = new RemoteUserList();
-            RemoteCommands remoteCommands = new RemoteCommands();
-            RemoteMessages remoteMessages = new RemoteMessages();
+            RemoteCP<String[]> remoteCommands = new RemoteCP<String[]>("RemoteCPCommand");
+            RemoteCP<String> remoteMessages = new RemoteCP<String>("RemoteCPMessage");
 
             Registry registry = LocateRegistry.createRegistry(serverPort);
 

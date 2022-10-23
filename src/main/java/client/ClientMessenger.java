@@ -1,5 +1,6 @@
 package client;
 
+import remote.IRemoteCP;
 import remote.IRemoteMessages;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Only poll modifies chatArea's text, locking is redundant for now
  */
 public class ClientMessenger {
-    IRemoteMessages iRemoteMessages;
+    IRemoteCP<String> iRemoteMessages;
     private Lock chatAreaLock;
 
     private String messages;
@@ -21,7 +22,7 @@ public class ClientMessenger {
 
     private JTextArea chatArea;
 
-    public void setIRemoteMessages(IRemoteMessages iRemoteMessages) {
+    public void setIRemoteMessages(IRemoteCP<String> iRemoteMessages) {
         this.iRemoteMessages = iRemoteMessages;
     }
 

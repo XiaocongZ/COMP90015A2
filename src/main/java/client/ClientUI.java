@@ -14,6 +14,8 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 //TODO user name before message
 //TODO new file
@@ -26,10 +28,17 @@ public class ClientUI extends JFrame{
     private ClientUserList clientUserList;
 
     private ClientMessenger clientMessenger;
+
+    private ClientDrawer clientDrawer;
     private JPanel mainPanel;
 
     private JPanel canvas;
     private BufferedImage bImg;
+
+    /**
+     * lock for not only drawing, but reset...
+     */
+    private Lock drawLock;
 
     private CanvasListener canvasListener;
     private JButton sendButton;
@@ -57,6 +66,11 @@ public class ClientUI extends JFrame{
         return clientMessenger;
     }
 
+    public void setClientDrawer(ClientDrawer clientDrawer){
+        this.clientDrawer = clientDrawer;
+        canvasListener.setClientDrawer(clientDrawer);
+    }
+
     public ClientUI(ClientUserList clientUserList){
         setTitle("WhiteBoard-Client");
         setSize(800, 515);
@@ -70,7 +84,9 @@ public class ClientUI extends JFrame{
         Graphics2D imgGraphics = bImg.createGraphics();
         imgGraphics.setBackground(Color.white);
 
-        canvasListener = new CanvasListener( canvas.getGraphics(), imgGraphics);
+        drawLock = new ReentrantLock();
+        //TODO
+        canvasListener = new CanvasListener(this);
 
 
         chatArea.setEditable(false);
@@ -94,6 +110,8 @@ public class ClientUI extends JFrame{
         }
 
         clientMessenger = new ClientMessenger(chatArea);
+
+        //clientDrawer = new ClientDrawer(this, )
 
 
         //add listeners
@@ -171,7 +189,7 @@ public class ClientUI extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Color c = JColorChooser.showDialog(canvas, "Choose color", null);
-                canvasListener.getGraphics().setColor(c);
+                canvas.getGraphics().setColor(c);
                 bImg.getGraphics().setColor(c);
 
             }
@@ -228,8 +246,6 @@ public class ClientUI extends JFrame{
 
                 canvas.getGraphics().drawImage(bImg, 0, 0, null);
 
-                canvasListener.setImgGraphics(bImg.getGraphics());
-
                 System.out.println("Loaded");
 
             }
@@ -244,5 +260,53 @@ public class ClientUI extends JFrame{
         });
     }
 
+    public void draw(String[] command){
+        //TODO username
+        if(command[0] == "CanvasListener"){
+            return;
+        }
+        drawLock.lock();
+        draw(command, canvas.getGraphics());
+        draw(command, bImg.getGraphics());
+        drawLock.unlock();
+    }
+
+    /**
+     * should only invoke when drawLock is held.
+     * @param command
+     * @param graphics
+     */
+    private void draw(String[] command, Graphics graphics){
+
+        switch (command[1]){
+            case "Line":
+                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Oval":
+                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Circle":
+                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Rect":
+                graphics.drawRect(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Free":
+                graphics.drawOval(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Triangle":
+                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                graphics.drawLine(Integer.valueOf(command[2]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[3]));
+                graphics.drawLine(Integer.valueOf(command[4]), Integer.valueOf(command[3]), Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+            case "Text":
+                //name type size string x y
+                Font f = new Font(null, Font.PLAIN, Integer.valueOf(command[2]));
+                graphics.setFont(f);
+                graphics.drawString(command[3], Integer.valueOf(command[4]), Integer.valueOf(command[5]));
+                break;
+
+        }
+    }
 
 }
