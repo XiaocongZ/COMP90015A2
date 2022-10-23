@@ -36,7 +36,6 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(serverPort);
             remoteUserList = (IRemoteUserList) registry.lookup(remoteUserListURL);
 
-
             System.out.println("Successfully retrieved remote user list");
 
         } catch (NotBoundException | RemoteException e) {
