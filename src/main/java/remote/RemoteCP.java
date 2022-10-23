@@ -33,7 +33,7 @@ public class RemoteCP<T> extends UnicastRemoteObject implements IRemoteCP<T>{
         itemArray.add(item);
         int index = itemArray.size() - 1;
         itemLock.unlock();
-        System.out.println(itemArray.toString());
+
         //return the index
         return index;
     }

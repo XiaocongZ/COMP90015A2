@@ -82,9 +82,10 @@ public class ClientUI extends JFrame{
         setResizable(false);
 
         canvas.setBorder(BorderFactory.createLineBorder(Color.black));
-        bImg = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        bImg = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D imgGraphics = bImg.createGraphics();
-        imgGraphics.setBackground(Color.white);
+        imgGraphics.setColor(Color.white);
+        imgGraphics.fillRect(1, 1, getWidth(), getHeight());
 
         drawLock = new ReentrantLock();
         //TODO
@@ -258,15 +259,27 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String filename = (String) JOptionPane.showInputDialog(canvas, "Do you want to save current graphics?", "save", JOptionPane.PLAIN_MESSAGE, null, new String[]{"yes", "no"}, "yes");
-                System.out.println(filename);
+                String op = (String) JOptionPane.showInputDialog(canvas, "Do you want to save current graphics?", "save", JOptionPane.PLAIN_MESSAGE, null, new String[]{"yes", "no"}, "yes");
+                if(op.equals("yes")){
+
+                }
+
+                Command command = new Command("CanvasListener", "Clear", Color.white);
+                try {
+                    draw(command);
+                    bImg.createGraphics().setBackground(Color.WHITE);
+                    clientDrawer.commit(command);
+
+                } catch (RemoteException ex) {
+                    System.err.println("New file failed: " + ex);
+                }
             }
         });
     }
 
     public void draw(Command command){
         //TODO username
-        if(Objects.equals(command.name, "CanvasListener..")){
+        if(Objects.equals(command.name, "admin")){
             return;
         }
         drawLock.lock();
@@ -309,6 +322,10 @@ public class ClientUI extends JFrame{
                 Font f = new Font(null, Font.PLAIN, command.num1);
                 graphics.setFont(f);
                 graphics.drawString(command.str1, command.num2, command.num3);
+                break;
+            case "Clear":
+                graphics.clearRect(1, 1, getWidth(), getHeight());
+                graphics.setColor(Color.black);
                 break;
 
         }
