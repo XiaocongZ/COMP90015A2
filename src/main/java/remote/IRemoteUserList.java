@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IRemoteUserList extends Remote {
 
+    public String registerUser(String userName) throws RemoteException;
+
     // adds user to the user list
     public void addUser(String userName) throws RemoteException;
 

@@ -24,9 +24,15 @@ public class Client {
     private static final String remoteUserListName = "RemoteUserList";
     private static final String remoteCommandsIdentifier = "RemoteCommands";
     private static final String remoteMessagesIdentifier = "RemoteMessages";
-    private static int serverPort = 5859;
+    //private static int serverPort = 5859;
 
-    private final String name;
+    private String userName;
+
+    private String userID;
+
+    private int serverPort;
+
+    private String serverIP;
 
     private ClientUserList clientUserList;
 
@@ -36,7 +42,8 @@ public class Client {
 
 
     public static void main(String[] args){
-        Client myClient =new Client("Cname");
+
+        Client myClient =new Client(args[0], Integer.parseInt(args[1]), args[2]);
 
 
     }
@@ -65,8 +72,10 @@ public class Client {
         return null;
     }
 
-    public Client(String name){
-        this.name =name;
+    public Client(String serverIP, int port, String name){
+        this.serverIP = serverIP;
+        this.serverPort = port;
+        this.userName =name;
 
         IRemoteUserList remoteUserList = (IRemoteUserList) lookupRemote(remoteUserListName);
         IRemoteCP<String> remoteMessages = (IRemoteCP<String>) lookupRemote(remoteMessagesIdentifier);
@@ -76,8 +85,15 @@ public class Client {
         //The order of constructing is intertwined...
 
         DefaultListModel listModel = new DefaultListModel();
+        System.out.println(userName);
         this.clientUserList = new ClientUserList(listModel, remoteUserList);
-        ClientUI myUI = new ClientUI(clientUserList);
+
+        try {
+            userID = clientUserList.register(userName);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        ClientUI myUI = new ClientUI(userID, clientUserList);
         this.clientDrawer = new ClientDrawer(myUI, remoteCommand);
         myUI.setClientDrawer(clientDrawer);
 

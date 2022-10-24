@@ -9,7 +9,6 @@ import java.rmi.RemoteException;
 
 
 public class CanvasListener implements MouseListener, MouseMotionListener {
-    private String name = "CanvasListener";
 
     private String shape;
 
@@ -18,6 +17,14 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
     private ClientUI clientUI;
 
     private ClientDrawer clientDrawer;
+
+    private int xPressed;
+
+    private int yPressed;
+
+    private int xReleased;
+
+    private int yReleased;
 
     public void setClientDrawer(ClientDrawer clientDrawer) {
         this.clientDrawer = clientDrawer;
@@ -29,12 +36,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         color = Color.black;
     }
 
-    private int xPressed;
-    private int yPressed;
 
-    private int xReleased;
-
-    private int yReleased;
     /*
     public void setGraphics(Graphics graphics) {
         this.graphics = graphics;
@@ -72,7 +74,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
         xReleased = e.getX();
         yReleased = e.getY();
-        Command command = new Command(name, shape, color);
+        Command command = new Command(clientUI.getUserID(), shape, color);
         if(shape=="Oval" || shape=="Rect" || shape=="Circle"){
             command.num1 = Math.min(xPressed, xReleased);
             command.num2 = Math.min(yPressed, yReleased);
@@ -120,7 +122,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         int xDragged = e.getX();
         int yDragged = e.getY();
         if(shape == "Free"){
-            Command command = new Command(name, shape, color);
+            Command command = new Command(clientUI.getUserID(), shape, color);
             command.num1 = xDragged;
             command.num2 = yDragged;
             command.num3 = 2;

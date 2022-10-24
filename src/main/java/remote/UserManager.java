@@ -35,7 +35,7 @@ public class UserManager {
     *  Add user of username to user list if manager does not exist and if the manager exists then assigns username to
     * manager.
     * */
-    public synchronized String addUser(String userName){
+    public synchronized String registerUser(String userName){
 
         String userID = String.format("%s (%d)", userName, userCounter);
 

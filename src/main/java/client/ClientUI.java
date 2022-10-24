@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 //TODO disable kick self
 public class ClientUI extends JFrame{
     //private DefaultListModel listModel;
-
+    private String userID;
     private ClientUserList clientUserList;
 
     private ClientMessenger clientMessenger;
@@ -67,12 +67,17 @@ public class ClientUI extends JFrame{
         return clientMessenger;
     }
 
+    public String getUserID(){
+        return userID;
+    }
+
     public void setClientDrawer(ClientDrawer clientDrawer){
         this.clientDrawer = clientDrawer;
         canvasListener.setClientDrawer(clientDrawer);
     }
 
-    public ClientUI(ClientUserList clientUserList){
+    public ClientUI(String userID, ClientUserList clientUserList){
+        this.userID = userID;
         setTitle("WhiteBoard-Client");
         setSize(800, 515);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -102,19 +107,8 @@ public class ClientUI extends JFrame{
 
         userPane.getViewport().add(userList);
 
-
-        try {
-            clientUserList.add("JOHN");
-            clientUserList.add("Doe");
-            clientUserList.add("shawn");
-            clientUserList.add("yukash");
-        } catch (RemoteException e) {
-            System.err.println("RemoteException when add user: " + e);
-        }
-
         clientMessenger = new ClientMessenger(chatArea);
 
-        //clientDrawer = new ClientDrawer(this, )
 
 
         //add listeners
@@ -279,7 +273,7 @@ public class ClientUI extends JFrame{
 
     public void draw(Command command){
         //TODO username
-        if(Objects.equals(command.name, "admin")){
+        if(Objects.equals(command.name, userID)){
             return;
         }
         drawLock.lock();
@@ -295,7 +289,7 @@ public class ClientUI extends JFrame{
      */
     private void draw(Command command, Graphics graphics){
         graphics.setColor(command.color);
-        System.out.println(command.toString());
+        //System.out.println(command.toString());
         switch (command.shape){
             case "Line":
                 graphics.drawLine(command.num1, command.num2, command.num3, command.num4);

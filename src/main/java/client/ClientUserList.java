@@ -40,13 +40,16 @@ public class ClientUserList {
      * @param name
      * @throws RemoteException
      */
-    synchronized public void add(String name) throws RemoteException {
+    synchronized public String register(String name) throws RemoteException {
+
+        System.out.println("Register function is entered " + name);
+        String userID = remoteUserList.registerUser(name);
+        System.out.println("userID creation complete " + userID);
+
         userlistLock.lock();
-        listModel.addElement(name);
+        listModel.addElement(userID);
         userlistLock.unlock();
-
-        remoteUserList.addUser(name);
-
+        return userID;
     }
 
     synchronized public void removeElement(String name) throws RemoteException {
