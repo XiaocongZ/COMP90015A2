@@ -140,10 +140,12 @@ public class ClientUI extends JFrame{
                 }
                 if(userList.getSelectedValue() != null ) {
                     try {
-                        clientUserList.removeElement((String) userList.getSelectedValue());
+                        //kick admin, kick everyone
                         if(userList.getSelectedValue().equals(userID)){
                             clientUserList.removeAll();
                         }
+                        clientUserList.removeElement((String) userList.getSelectedValue());
+
                     }
                     catch (RemoteException er){
                         System.err.println("RemoteException when kick user: " + er);

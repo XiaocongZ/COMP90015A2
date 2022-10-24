@@ -94,6 +94,7 @@ public class Client {
             throw new RuntimeException(e);
         }
         ClientUI myUI = new ClientUI(userID, clientUserList);
+        clientUserList.setClientUI(myUI);
         this.clientDrawer = new ClientDrawer(myUI, remoteCommand);
         myUI.setClientDrawer(clientDrawer);
 

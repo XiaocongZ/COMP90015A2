@@ -10,6 +10,8 @@ import java.util.concurrent.locks.Lock;
 
 public class ClientUserList {
 
+    private ClientUI clientUI;
+
     String userID;
 
     private Lock userlistLock;
@@ -17,6 +19,10 @@ public class ClientUserList {
     //acquire when modifying listModel
     private DefaultListModel listModel;
     private IRemoteUserList remoteUserList;
+
+    public void setClientUI(ClientUI clientUI) {
+        this.clientUI = clientUI;
+    }
 
     public DefaultListModel getListModel(){
         return listModel;
@@ -93,6 +99,10 @@ public class ClientUserList {
 
         if(!listModel.contains(userID)){
             System.out.println("You're kicked out");
+            JOptionPane.showMessageDialog(clientUI.getContentPane(),
+                    "You're kicked out.",
+                    "sad",
+                    JOptionPane.PLAIN_MESSAGE);
             System.exit(0);
         }
     }
