@@ -141,6 +141,9 @@ public class ClientUI extends JFrame{
                 if(userList.getSelectedValue() != null ) {
                     try {
                         clientUserList.removeElement((String) userList.getSelectedValue());
+                        if(userList.getSelectedValue().equals(userID)){
+                            clientUserList.removeAll();
+                        }
                     }
                     catch (RemoteException er){
                         System.err.println("RemoteException when kick user: " + er);
@@ -228,17 +231,7 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                File f = new File("screenshot.png");
-                try {
-
-                    ImageIO.write(bImg, "png", f);
-
-                    System.out.println("saved");
-                } catch (IOException ex) {
-                    System.err.println("Save file failed: " + ex);
-                }
-
-
+                saveAs();
             }
         });
         loadButton.addMouseListener(new MouseAdapter() {
@@ -264,7 +257,7 @@ public class ClientUI extends JFrame{
                 super.mouseClicked(e);
                 String op = (String) JOptionPane.showInputDialog(canvas, "Do you want to save current graphics?", "save", JOptionPane.PLAIN_MESSAGE, null, new String[]{"yes", "no"}, "yes");
                 if(op.equals("yes")){
-
+                    saveAs();
                 }
 
                 Command command = new Command("CanvasListener", "Clear", Color.white);
@@ -331,6 +324,19 @@ public class ClientUI extends JFrame{
                 graphics.setColor(Color.black);
                 break;
 
+        }
+    }
+
+    private void saveAs(){
+        String fName = JOptionPane.showInputDialog("Filename:");
+        File f = new File(fName);
+        try {
+
+            ImageIO.write(bImg, "png", f);
+
+            System.out.println("saved");
+        } catch (IOException ex) {
+            System.err.println("Save file failed: " + ex);
         }
     }
 

@@ -42,7 +42,7 @@ public class ClientUserList {
      * @param name
      * @throws RemoteException
      */
-    synchronized public String register(String name) throws RemoteException {
+    public String register(String name) throws RemoteException {
         userID = remoteUserList.registerUser(name);
         /*
         userlistLock.lock();
@@ -52,12 +52,24 @@ public class ClientUserList {
         return userID;
     }
 
-    synchronized public void removeElement(String name) throws RemoteException {
+    public void removeElement(String name) throws RemoteException {
         userlistLock.lock();
         listModel.removeElement(name);
         userlistLock.unlock();
         remoteUserList.removeUser(name);
     }
+
+    public void removeAll() throws RemoteException {
+        /*
+        userlistLock.lock();
+        listModel.removeAllElements();
+        userlistLock.unlock();
+
+        */
+        remoteUserList.removeAll();
+    }
+
+
 
     /**
      * Only invoked by updating thread, not by user's event
