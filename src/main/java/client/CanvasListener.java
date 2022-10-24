@@ -74,7 +74,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
         xReleased = e.getX();
         yReleased = e.getY();
-        Command command = new Command(clientUI.getUserID(), shape, color);
+        Command command = new Command("canvasListener", shape, color);
         if(shape=="Oval" || shape=="Rect" || shape=="Circle"){
             command.num1 = Math.min(xPressed, xReleased);
             command.num2 = Math.min(yPressed, yReleased);
@@ -91,7 +91,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
             String text = JOptionPane.showInputDialog("Annotate:");
             if(text!=null) {
                 command.str1 = text;
-                command.num1 = 5;
+                command.num1 = Math.abs(xPressed - xReleased);
                 command.num2 = xPressed;
                 command.num3 = yPressed;
                 clientUI.draw(command);
@@ -99,7 +99,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         }
         if(command.shape != "None") {
             try {
-
+                command.name = clientUI.getUserID();
                 clientDrawer.commit(command);
             } catch (RemoteException ex) {
                 System.err.println("RemoteException when commit draw: " + ex);
@@ -122,7 +122,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
         int xDragged = e.getX();
         int yDragged = e.getY();
         if(shape == "Free"){
-            Command command = new Command(clientUI.getUserID(), shape, color);
+            Command command = new Command("canvasListener", shape, color);
             command.num1 = xDragged;
             command.num2 = yDragged;
             command.num3 = 2;
@@ -130,6 +130,7 @@ public class CanvasListener implements MouseListener, MouseMotionListener {
 
             clientUI.draw(command);
             try {
+                command.name = clientUI.getUserID();
                 clientDrawer.commit(command);
             } catch (RemoteException ex) {
                 System.err.println("RemoteException when commit draw: " + ex);

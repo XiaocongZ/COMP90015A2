@@ -14,15 +14,16 @@ import java.rmi.registry.Registry;
 
 public class Server {
 
-    private static int serverPort = 5859;
+    private int serverPort;
 
+    private String IPaddress;
     private static final String remoteUserListServerIdentifier = "RemoteUserList";
     private static final String remoteRemoteCommandsIdentifier = "RemoteCommands";
     private static final String remoteRemoteMessagesIdentifier = "RemoteMessages";
 
-    public static void main(String[] args) {
-
-
+    public Server(String IPaddress, int serverPort){
+        this.IPaddress = IPaddress;
+        this.serverPort = serverPort;
 
         try {
 
@@ -33,7 +34,7 @@ public class Server {
 
             Registry registry = LocateRegistry.createRegistry(serverPort);
 
-            String IPaddress = "127.0.0.1";
+
 
             String remoteUserListUrl = "rmi://" + IPaddress + ":" +
                     String.valueOf(serverPort) + "/" + remoteUserListServerIdentifier;
@@ -56,6 +57,13 @@ public class Server {
             System.out.println("Server RemoteException: " + e.getMessage());
 
         }
+    }
+
+    public static void main(String[] args) {
+        Server myServer = new Server(args[0], Integer.valueOf(args[1]));
+
+
+
 
     }
 }

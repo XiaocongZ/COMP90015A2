@@ -13,16 +13,13 @@ public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserLi
 
     private List<String> userNames = null;
 
-    private int userCounter = 0;
+    private int userCounter;
 
     // mapping for user: clientsID list
     private HashMap<String, Integer> usersIDList;
 
     // whiteboard managers ID
     private String managerID = null;
-
-    // remote user list object
-    private IRemoteUserList remoteUserList;
 
     // list of candidate users (don't know the purpose of this yet)
     // none of the candidate user functions will be implemented
@@ -33,6 +30,7 @@ public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserLi
 
         usersIDList = new HashMap<>();
         candidateUsers = new ArrayList<>();
+        userCounter = 0;
     }
 
 
@@ -51,10 +49,11 @@ public class RemoteUserList extends UnicastRemoteObject implements IRemoteUserLi
             if (managerID == null){
                 System.out.println(" this is a manager registered");
                 managerID = userID;
-                remoteUserList.setManagerName(managerID);
+                setManagerName(managerID);
+                addUser(userID);
             }else{
                 System.out.println("This is a client registered");
-                remoteUserList.addUser(userID);
+                addUser(userID);
             }
 
         }catch (RemoteException e){

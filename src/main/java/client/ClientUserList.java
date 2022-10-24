@@ -10,6 +10,8 @@ import java.util.concurrent.locks.Lock;
 
 public class ClientUserList {
 
+    String userID;
+
     private Lock userlistLock;
 
     //acquire when modifying listModel
@@ -41,14 +43,12 @@ public class ClientUserList {
      * @throws RemoteException
      */
     synchronized public String register(String name) throws RemoteException {
-
-        System.out.println("Register function is entered " + name);
-        String userID = remoteUserList.registerUser(name);
-        System.out.println("userID creation complete " + userID);
-
+        userID = remoteUserList.registerUser(name);
+        /*
         userlistLock.lock();
         listModel.addElement(userID);
         userlistLock.unlock();
+         */
         return userID;
     }
 
@@ -77,10 +77,11 @@ public class ClientUserList {
 
         listModel.addAll(users);
 
-
-        //selected user would lost
-        //listModel.removeAllElements();
-        //listModel.addAll(users);
         userlistLock.unlock();
+
+        if(!listModel.contains(userID)){
+            System.out.println("You're kicked out");
+            System.exit(0);
+        }
     }
 }

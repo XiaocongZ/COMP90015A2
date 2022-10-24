@@ -18,10 +18,7 @@ import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-//TODO user name before message
-//TODO new file
-//TODO event
-//TODO event listener
+//TODO save when new
 //TODO disable kick self
 public class ClientUI extends JFrame{
     //private DefaultListModel listModel;
@@ -78,7 +75,12 @@ public class ClientUI extends JFrame{
 
     public ClientUI(String userID, ClientUserList clientUserList){
         this.userID = userID;
-        setTitle("WhiteBoard-Client");
+        if(userID.charAt(userID.length() - 2) == '0'){
+            setTitle("WhiteBoard-Admin");
+        }else{
+            setTitle("WhiteBoard-Client");
+        }
+
         setSize(800, 515);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,7 +118,7 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String msg = chatInputField.getText();
+                String msg = userID + "$" + chatInputField.getText();
                 try {
                     clientMessenger.commit(msg);
                 } catch (RemoteException ex) {
@@ -129,7 +131,14 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(userList.getSelectedValue() != null) {
+                if('0' != userID.charAt(userID.length() - 2)){
+                    JOptionPane.showMessageDialog(mainPanel,
+                            "You're not admin.",
+                            "Don't even try",
+                            JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+                if(userList.getSelectedValue() != null ) {
                     try {
                         clientUserList.removeElement((String) userList.getSelectedValue());
                     }
@@ -313,7 +322,7 @@ public class ClientUI extends JFrame{
                 break;
             case "Text":
                 //name type size string x y
-                Font f = new Font(null, Font.PLAIN, command.num1);
+                Font f = new Font(null, Font.PLAIN, Math.max(command.num1, 10));
                 graphics.setFont(f);
                 graphics.drawString(command.str1, command.num2, command.num3);
                 break;
