@@ -240,7 +240,8 @@ public class ClientUI extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                File f = new File("screenshot.png");
+                String fName = JOptionPane.showInputDialog("Filename:");
+                File f = new File(fName);
                 try {
                     bImg = ImageIO.read(f);
                 } catch (IOException ex) {
